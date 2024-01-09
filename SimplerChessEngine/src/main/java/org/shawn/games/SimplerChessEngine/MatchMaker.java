@@ -3,6 +3,7 @@ package org.shawn.games.SimplerChessEngine;
 import org.shawn.games.SimplerChessEngine.Algorithms.Algorithm;
 
 import com.github.bhlangonijr.chesslib.*;
+import com.github.bhlangonijr.chesslib.move.*;
 
 public class MatchMaker
 {
@@ -73,9 +74,40 @@ public class MatchMaker
 		
 		if(board.isMated())
 		{
-			return board.getSideToMove() == Side.BLACK ? 1 : 0;
+			return board.getSideToMove() == Side.BLACK ? 1 : -1;
 		}
 		
 		return 0;
+	}
+	
+	public String demonstrationMatch(boolean reverse)
+	{
+		MoveList moves = new MoveList();
+		Board board = new Board();
+		boolean a0Move = reverse;
+		while (!board.isDraw() && !board.isMated())
+		{
+			Move nextMove = null;
+			if(a0Move)
+			{
+				nextMove = a0.nextMove(board.clone());
+			}
+			else
+			{
+				nextMove = a1.nextMove(board.clone());
+			}
+			board.doMove(nextMove);
+			moves.add(nextMove);
+		}
+		
+		StringBuilder partialPGN = new StringBuilder();
+		
+		for(Move move: moves)
+		{
+			partialPGN.append(move.toString());
+			partialPGN.append(" ");
+		}
+		
+		return partialPGN.deleteCharAt(partialPGN.length() - 1).toString();
 	}
 }
