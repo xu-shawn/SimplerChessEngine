@@ -6,11 +6,18 @@ import java.util.*;
 
 public class RandomMover implements Algorithm
 {
+	Random rng;
+	
+	public RandomMover()
+	{
+		this.rng = new Random();
+	}
+	
 	@Override
 	public Move nextMove(Board board)
 	{
 		final List<Move> legalMoves = board.legalMoves();
-		Random rng = new Random();
-		return legalMoves.get(rng.nextInt(legalMoves.size()));
+		int rngValue = rng.nextInt(legalMoves.size());
+		return legalMoves.get(rngValue);
 	}
 }

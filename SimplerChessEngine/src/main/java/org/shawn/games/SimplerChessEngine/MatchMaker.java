@@ -70,6 +70,7 @@ public class MatchMaker
 			{
 				board.doMove(a1.nextMove(board.clone()));
 			}
+			a0Move = !a0Move;
 		}
 		
 		if(board.isMated())
@@ -96,6 +97,7 @@ public class MatchMaker
 			{
 				nextMove = a1.nextMove(board.clone());
 			}
+			a0Move = !a0Move;
 			board.doMove(nextMove);
 			moves.add(nextMove);
 		}
