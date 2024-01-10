@@ -6,7 +6,7 @@ public class TUI
 {
 	public static void main(String args[])
 	{
-		MatchMaker match = new MatchMaker(new RandomMover(), new ForwardMover());
+		MatchMaker match = new MatchMaker(new Checker(), new ForwardMover());
 		int[] results = match.play(1000);
 		System.out.print("WDL: ");
 		System.out.print(results[0]);

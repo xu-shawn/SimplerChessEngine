@@ -59,7 +59,7 @@ public class MatchMaker
 	public int playOnce(boolean reverse)
 	{
 		Board board = new Board();
-		boolean a0Move = reverse;
+		boolean a0Move = !reverse;
 		while (!board.isDraw() && !board.isMated())
 		{
 			if(a0Move)
@@ -85,7 +85,7 @@ public class MatchMaker
 	{
 		MoveList moves = new MoveList();
 		Board board = new Board();
-		boolean a0Move = reverse;
+		boolean a0Move = !reverse;
 		while (!board.isDraw() && !board.isMated())
 		{
 			Move nextMove = null;
