@@ -17,7 +17,6 @@ public class RandomMover implements Algorithm
 	public Move nextMove(Board board)
 	{
 		final List<Move> legalMoves = board.legalMoves();
-		int rngValue = rng.nextInt(legalMoves.size());
-		return legalMoves.get(rngValue);
+		return legalMoves.get(rng.nextInt(legalMoves.size()));
 	}
 }
