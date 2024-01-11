@@ -12,8 +12,10 @@ public class ForwardMover implements Algorithm
 		@Override
 		public int compare(Move m1, Move m2)
 		{
-			return  (Integer.parseInt(m1.getTo().getRank().getNotation()) - Integer.parseInt(m1.getFrom().getRank().getNotation())) -
-					(Integer.parseInt(m2.getTo().getRank().getNotation()) - Integer.parseInt(m2.getFrom().getRank().getNotation()));
+			return (Integer.parseInt(m1.getTo().getRank().getNotation())
+					- Integer.parseInt(m1.getFrom().getRank().getNotation()))
+					- (Integer.parseInt(m2.getTo().getRank().getNotation())
+							- Integer.parseInt(m2.getFrom().getRank().getNotation()));
 		}
 
 	}
@@ -22,7 +24,15 @@ public class ForwardMover implements Algorithm
 	public Move nextMove(Board board)
 	{
 		final List<Move> legalMoves = board.legalMoves();
-		legalMoves.sort(new MoveComparator());
-		return legalMoves.get(0);
+		legalMoves.sort(new Comparator<Move>() {
+			public int compare(Move m1, Move m2)
+			{
+				return (Integer.parseInt(m1.getTo().getRank().getNotation())
+						- Integer.parseInt(m1.getFrom().getRank().getNotation()))
+						- (Integer.parseInt(m2.getTo().getRank().getNotation())
+								- Integer.parseInt(m2.getFrom().getRank().getNotation()));
+			}
+		});
+		return legalMoves.get(board.getSideToMove() == Side.BLACK ? 0 : (legalMoves.size() - 1));
 	}
 }
