@@ -36,14 +36,15 @@ public class NaiveAlphaBeta implements Algorithm
 				+ Long.bitCount(board.getBitboard(Piece.make(side, PieceType.BISHOP))) * BISHOP_VALUE
 				+ Long.bitCount(board.getBitboard(Piece.make(side, PieceType.ROOK))) * ROOK_VALUE
 				+ Long.bitCount(board.getBitboard(Piece.make(side, PieceType.QUEEN))) * QUEEN_VALUE
-				- 		(Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.PAWN))) * PAWN_VALUE
-						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.KNIGHT))) * KNIGHT_VALUE
-						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.BISHOP))) * BISHOP_VALUE
-						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.ROOK))) * ROOK_VALUE
-						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.QUEEN))) * QUEEN_VALUE);
+				- 
+				(Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.PAWN))) * PAWN_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.KNIGHT))) * KNIGHT_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.BISHOP))) * BISHOP_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.ROOK))) * ROOK_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.QUEEN))) * QUEEN_VALUE);
 	}
 
-	private int minimax(Board board, int depth, int alpha, int beta)
+	private int search(Board board, int depth, int alpha, int beta)
 	{
 		if (board.isMated())
 		{
@@ -52,7 +53,7 @@ public class NaiveAlphaBeta implements Algorithm
 
 		if (board.isDraw())
 		{
-			return -DRAW_EVAL;
+			return DRAW_EVAL;
 		}
 
 		if (depth <= 0)
@@ -60,29 +61,25 @@ public class NaiveAlphaBeta implements Algorithm
 			return evaluate(board);
 		}
 
-		int max = MIN_EVAL;
-
 		final List<Move> legalMoves = board.legalMoves();
 
 		for (Move move : legalMoves)
 		{
 			board.doMove(move);
 
-			int thisMoveEval = -minimax(board, depth - 1, -beta, -alpha);
+			int thisMoveEval = -search(board, depth - 1, -beta, -alpha);
 
-			max = Math.max(thisMoveEval, max);
+			board.undoMove();
+			
 			alpha = Math.max(alpha, thisMoveEval);
 			
 			if (alpha >= beta)
 			{
-				board.undoMove();
-				break;
+				return beta;
 			}
-
-			board.undoMove();
 		}
 
-		return max;
+		return alpha;
 	}
 
 	@Override
@@ -96,21 +93,20 @@ public class NaiveAlphaBeta implements Algorithm
 
 		int rootAlpha = -MAX_EVAL;
 		int rootBeta = MAX_EVAL;
-
-		int eval = rootAlpha = -minimax(board, depth - 1, -rootBeta, -rootAlpha);
+		
 		board.undoMove();
 
 		for (Move move : legalMoves)
 		{
 			board.doMove(move);
-			int thisMoveEval = -minimax(board, depth - 1, --rootBeta, -rootAlpha);
-			if (thisMoveEval > eval)
+			int thisMoveEval = -search(board, depth - 1, -rootBeta, -rootAlpha);
+			board.undoMove();
+			
+			if (thisMoveEval > rootAlpha)
 			{
 				bestMove = move;
-				eval = thisMoveEval;
-				rootAlpha = Math.max(rootAlpha, thisMoveEval);
+				rootAlpha = thisMoveEval;
 			}
-			board.undoMove();
 		}
 
 		return bestMove;
