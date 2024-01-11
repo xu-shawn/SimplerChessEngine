@@ -27,11 +27,17 @@ public class Minimax implements Algorithm
 
 	public int evaluate(Board board)
 	{
+		Side opposite = ourSide.flip();
 		return Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.PAWN))) * PAWN_VALUE
 				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.KNIGHT))) * KNIGHT_VALUE
 				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.BISHOP))) * BISHOP_VALUE
 				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.ROOK))) * ROOK_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.QUEEN))) * QUEEN_VALUE;
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.QUEEN))) * QUEEN_VALUE
+				- 		(Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.PAWN))) * PAWN_VALUE
+						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.KNIGHT))) * KNIGHT_VALUE
+						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.BISHOP))) * BISHOP_VALUE
+						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.ROOK))) * ROOK_VALUE
+						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.QUEEN))) * QUEEN_VALUE);
 	}
 
 	private int minimax(Board board, int depth, boolean mini)
@@ -39,6 +45,11 @@ public class Minimax implements Algorithm
 		if(board.isMated())
 		{
 			return MATE_EVAL;
+		}
+		
+		if(board.isDraw())
+		{
+			return DRAW_EVAL;
 		}
 		
 		if(depth <= 0)
