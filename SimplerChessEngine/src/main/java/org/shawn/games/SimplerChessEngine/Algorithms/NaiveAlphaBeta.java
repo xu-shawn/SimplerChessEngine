@@ -76,7 +76,6 @@ public class NaiveAlphaBeta implements Algorithm
 			if (alpha >= beta)
 			{
 				board.undoMove();
-				TUI.skips ++;
 				break;
 			}
 
