@@ -11,9 +11,22 @@ public class HumanPlayer implements Algorithm
 	public Move nextMove(Board board)
 	{
 		Scanner s = new Scanner(System.in);
-		System.out.print(board + "\nYour Move: ");
-		String move = s.next();
-		return new Move(move, board.getSideToMove());
+		System.out.println(board + "\nFEN: " + board.getFen());
+		while (true)
+		{
+			System.out.print("Your Move: ");
+			try
+			{
+				Move move = new Move(s.next(), board.getSideToMove());
+				if(!board.isMoveLegal(move, true))
+				{
+					continue;
+				}
+			}
+			catch (Exception e)
+			{
+			}
+		}
 	}
 
 }
