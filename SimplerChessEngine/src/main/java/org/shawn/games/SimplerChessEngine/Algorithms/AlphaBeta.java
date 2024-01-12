@@ -2,8 +2,6 @@ package org.shawn.games.SimplerChessEngine.Algorithms;
 
 import java.util.*;
 
-import org.shawn.games.SimplerChessEngine.TUI;
-
 import com.github.bhlangonijr.chesslib.*;
 import com.github.bhlangonijr.chesslib.move.*;
 
@@ -14,9 +12,9 @@ public class AlphaBeta implements Algorithm
 	final int BISHOP_VALUE = 300;
 	final int ROOK_VALUE = 500;
 	final int QUEEN_VALUE = 900;
-	final int MAX_EVAL = 1000000;
-	final int MIN_EVAL = -1000000;
-	final int MATE_EVAL = 500000;
+	final int MAX_EVAL = 1000000000;
+	final int MIN_EVAL = -1000000000;
+	final int MATE_EVAL = 500000000;
 	final int DRAW_EVAL = 0;
 
 	int depth;
@@ -82,12 +80,12 @@ public class AlphaBeta implements Algorithm
 		return moves;
 	}
 	
-	private int quiesce(Board board, int alpha, int beta)
+	private int quiesce(Board board, int alpha, int beta, int ply)
 	{
 		
 		if (board.isMated())
 		{
-			return -MATE_EVAL;
+			return -MATE_EVAL + ply;
 		}
 
 		if (board.isDraw())
@@ -117,7 +115,7 @@ public class AlphaBeta implements Algorithm
 			
 			board.doMove(move);
 			
-			int score = -quiesce(board, -beta, -alpha);
+			int score = -quiesce(board, -beta, -alpha, ply + 1);
 			
 			board.undoMove();
 			
@@ -132,11 +130,11 @@ public class AlphaBeta implements Algorithm
 		return alpha;
 	}
 
-	private int mainSearch(Board board, int depth, int alpha, int beta)
+	private int mainSearch(Board board, int depth, int alpha, int beta, int ply)
 	{
 		if (board.isMated())
 		{
-			return -MATE_EVAL;
+			return -MATE_EVAL + ply;
 		}
 
 		if (board.isDraw())
@@ -146,10 +144,8 @@ public class AlphaBeta implements Algorithm
 
 		if (depth <= 0)
 		{
-			return quiesce(board, alpha, beta);
+			return quiesce(board, alpha, beta, ply + 1);
 		}
-
-		int max = MIN_EVAL;
 
 		final List<Move> legalMoves = board.legalMoves();
 		
@@ -161,21 +157,20 @@ public class AlphaBeta implements Algorithm
 			
 			int newdepth = depth - 1;
 
-			int thisMoveEval = -mainSearch(board, newdepth, -beta, -alpha);
+			int thisMoveEval = -mainSearch(board, newdepth, -beta, -alpha, ply + 1);
 
-			max = Math.max(thisMoveEval, max);
 			alpha = Math.max(alpha, thisMoveEval);
 			
 			if (alpha >= beta)
 			{
 				board.undoMove();
-				break;
+				return beta;
 			}
 
 			board.undoMove();
 		}
 
-		return max;
+		return alpha;
 	}
 
 	@Override
@@ -195,7 +190,7 @@ public class AlphaBeta implements Algorithm
 		for (Move move : legalMoves)
 		{
 			board.doMove(move);
-			int thisMoveEval = -mainSearch(board, depth - 1, -rootBeta, -rootAlpha);
+			int thisMoveEval = -mainSearch(board, depth - 1, -rootBeta, -rootAlpha, 1);
 			board.undoMove();
 			
 			if (thisMoveEval > rootAlpha)
