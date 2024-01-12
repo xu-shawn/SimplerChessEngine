@@ -156,8 +156,14 @@ public class PeSTO
 	final static int ROOK_VALUE = 500;
 	final static int QUEEN_VALUE = 900;
 
-	final static int MAX_PHASE = PAWN_VALUE * 8 + KNIGHT_VALUE * 2 + BISHOP_VALUE * 2
-			+ ROOK_VALUE * 2 + QUEEN_VALUE * 2;
+	final static int PAWN_PHASE = 0;
+	final static int KNIGHT_PHASE = 1;
+	final static int BISHOP_PHASE = 1;
+	final static int ROOK_PHASE = 2;
+	final static int QUEEN_PHASE = 4;
+
+	final static int MAX_PHASE = PAWN_PHASE * 8 + KNIGHT_PHASE * 2 + BISHOP_PHASE * 2
+			+ ROOK_PHASE * 2 + QUEEN_PHASE * 2;
 
 	private static int getIndex(Side side, Square square)
 	{
@@ -263,16 +269,16 @@ public class PeSTO
 		Side ourSide = board.getSideToMove();
 		Side opposite = board.getSideToMove().flip();
 		// @formatter:off
-		return Long.bitCount(board.getBitboard(Piece.make(board.getSideToMove(), PieceType.PAWN))) * PAWN_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.KNIGHT))) * KNIGHT_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.BISHOP))) * BISHOP_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.ROOK))) * ROOK_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.QUEEN))) * QUEEN_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.PAWN))) * PAWN_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.KNIGHT))) * KNIGHT_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.BISHOP))) * BISHOP_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.ROOK))) * ROOK_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.QUEEN))) * QUEEN_VALUE;
+		return Long.bitCount(board.getBitboard(Piece.make(board.getSideToMove(), PieceType.PAWN))) * PAWN_PHASE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.KNIGHT))) * KNIGHT_PHASE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.BISHOP))) * BISHOP_PHASE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.ROOK))) * ROOK_PHASE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.QUEEN))) * QUEEN_PHASE
+				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.PAWN))) * PAWN_PHASE
+				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.KNIGHT))) * KNIGHT_PHASE
+				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.BISHOP))) * BISHOP_PHASE
+				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.ROOK))) * ROOK_PHASE
+				+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.QUEEN))) * QUEEN_PHASE;
 		// @formatter:on
 	}
 
