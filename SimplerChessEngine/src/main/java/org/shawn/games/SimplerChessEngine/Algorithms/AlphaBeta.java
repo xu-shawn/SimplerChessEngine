@@ -7,18 +7,17 @@ import com.github.bhlangonijr.chesslib.move.*;
 
 public class AlphaBeta implements Algorithm
 {
-	final int PAWN_VALUE = 100;
-	final int KNIGHT_VALUE = 300;
-	final int BISHOP_VALUE = 300;
-	final int ROOK_VALUE = 500;
-	final int QUEEN_VALUE = 900;
-	final int MAX_EVAL = 1000000000;
-	final int MIN_EVAL = -1000000000;
-	final int MATE_EVAL = 500000000;
-	final int DRAW_EVAL = 0;
+	private final int PAWN_VALUE = 100;
+	private final int KNIGHT_VALUE = 300;
+	private final int BISHOP_VALUE = 300;
+	private final int ROOK_VALUE = 500;
+	private final int QUEEN_VALUE = 900;
+	private final int MAX_EVAL = 1000000000;
+	private final int MIN_EVAL = -1000000000;
+	private final int MATE_EVAL = 500000000;
+	private final int DRAW_EVAL = 0;
 
-	int depth;
-	Side ourSide;
+	private int depth;
 
 	public AlphaBeta(int depth)
 	{
@@ -177,12 +176,11 @@ public class AlphaBeta implements Algorithm
 	public Move nextMove(Board board)
 	{
 		final List<Move> legalMoves = board.legalMoves();
-		ourSide = board.getSideToMove();
 
 		Move bestMove = legalMoves.get(0);
 		board.doMove(bestMove);
 
-		int rootAlpha = -MAX_EVAL;
+		int rootAlpha = MIN_EVAL;
 		int rootBeta = MAX_EVAL;
 		
 		board.undoMove();
