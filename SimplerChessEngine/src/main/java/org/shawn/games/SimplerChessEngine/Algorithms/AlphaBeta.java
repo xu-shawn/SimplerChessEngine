@@ -36,22 +36,27 @@ public class AlphaBeta implements Algorithm
 
 		if (p.getPieceType().equals(PieceType.PAWN))
 		{
-			return 1;
+			return PAWN_VALUE;
 		}
 
-		if (p.getPieceType().equals(PieceType.BISHOP) || p.getPieceType().equals(PieceType.KNIGHT))
+		if (p.getPieceType().equals(PieceType.KNIGHT))
 		{
-			return 3;
+			return KNIGHT_VALUE;
+		}
+
+		if (p.getPieceType().equals(PieceType.BISHOP))
+		{
+			return BISHOP_VALUE;
 		}
 
 		if (p.getPieceType().equals(PieceType.ROOK))
 		{
-			return 5;
+			return ROOK_VALUE;
 		}
 
 		if (p.getPieceType().equals(PieceType.QUEEN))
 		{
-			return 9;
+			return QUEEN_VALUE;
 		}
 
 		return 0;
@@ -59,18 +64,7 @@ public class AlphaBeta implements Algorithm
 
 	public int evaluate(Board board)
 	{
-		Side side = board.getSideToMove();
-		Side opposite = board.getSideToMove().flip();
-		return Long.bitCount(board.getBitboard(Piece.make(side, PieceType.PAWN))) * PAWN_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(side, PieceType.KNIGHT))) * KNIGHT_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(side, PieceType.BISHOP))) * BISHOP_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(side, PieceType.ROOK))) * ROOK_VALUE
-				+ Long.bitCount(board.getBitboard(Piece.make(side, PieceType.QUEEN))) * QUEEN_VALUE
-				- 		(Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.PAWN))) * PAWN_VALUE
-						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.KNIGHT))) * KNIGHT_VALUE
-						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.BISHOP))) * BISHOP_VALUE
-						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.ROOK))) * ROOK_VALUE
-						+ Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.QUEEN))) * QUEEN_VALUE);
+		return PeSTO.evaluate(board);
 	}
 	
 	private List<Move> sortMoves(List<Move> moves, Board board)
