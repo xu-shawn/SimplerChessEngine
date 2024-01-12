@@ -20,7 +20,7 @@ public class UCI
 
 	public static void main(String args[])
 	{
-		new UCI(new AlphaBeta(4)).UCIMainLoop();
+		new UCI(new AlphaBeta(5)).UCIMainLoop();
 	}
 
 	public void UCIMainLoop()
