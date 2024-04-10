@@ -17,7 +17,7 @@ public class PeSTO
 		      0,   0,   0,   0,   0,   0,  0,   0,
 	};
 
-	final static int EG_PAWN_TABLE[]=new int[]
+	final static int EG_PAWN_TABLE[] = new int[]
 	{
 		      0,   0,   0,   0,   0,   0,   0,   0,
 		    178, 173, 158, 134, 147, 132, 165, 187,
@@ -29,7 +29,7 @@ public class PeSTO
 		      0,   0,   0,   0,   0,   0,   0,   0,
 	};
 
-	final static int MG_KNIGHT_TABLE[]=new int[]
+	final static int MG_KNIGHT_TABLE[] = new int[]
 	{
 		    -167, -89, -34, -49,  61, -97, -15, -107,
 		     -73, -41,  72,  36,  23,  62,   7,  -17,
@@ -41,7 +41,7 @@ public class PeSTO
 		    -105, -21, -58, -33, -17, -28, -19,  -23,
 	};
 
-	final static int EG_KNIGHT_TABLE[]= new int[]
+	final static int EG_KNIGHT_TABLE[] = new int[]
 	{
 		    -58, -38, -13, -28, -31, -27, -63, -99,
 		    -25,  -8, -25,  -2,  -9, -25, -24, -52,
@@ -53,7 +53,7 @@ public class PeSTO
 		    -29, -51, -23, -15, -22, -18, -50, -64,
 	};
 
-	final static int MG_BISHOP_TABLE[]=new int[]
+	final static int MG_BISHOP_TABLE[] = new int[]
 	{
 		    -29,   4, -82, -37, -25, -42,   7,  -8,
 		    -26,  16, -18, -13,  30,  59,  18, -47,
@@ -65,7 +65,7 @@ public class PeSTO
 		    -33,  -3, -14, -21, -13, -12, -39, -21,
 	};
 
-	final static int EG_BISHOP_TABLE[]=new int[]
+	final static int EG_BISHOP_TABLE[] = new int[]
 	{
 		    -14, -21, -11,  -8, -7,  -9, -17, -24,
 		     -8,  -4,   7, -12, -3, -13,  -4, -14,
@@ -77,7 +77,7 @@ public class PeSTO
 		    -23,  -9, -23,  -5, -9, -16,  -5, -17,
 	};
 
-	final static int MG_ROOK_TABLE[]=new int[]
+	final static int MG_ROOK_TABLE[] = new int[]
 	{
 		     32,  42,  32,  51, 63,  9,  31,  43,
 		     27,  32,  58,  62, 80, 67,  26,  44,
@@ -89,7 +89,7 @@ public class PeSTO
 		    -19, -13,   1,  17, 16,  7, -37, -26,
 	};
 
-	final static int EG_ROOK_TABLE[]=new int[]
+	final static int EG_ROOK_TABLE[] = new int[]
 	{
 		    13, 10, 18, 15, 12,  12,   8,   5,
 		    11, 13, 13, 11, -3,   3,   8,   3,
@@ -148,13 +148,31 @@ public class PeSTO
 		    -27, -11,   4,  13,  14,   4,  -5, -17,
 		    -53, -34, -21, -11, -28, -14, -24, -43
 	};
+	
+	final static int MIRRORED_SQUARE_VALUE[] = new int[]
+	{
+			56, 57, 58, 59, 60, 61, 62, 63,
+			48, 49, 50, 51, 52, 53, 54, 55,
+			40, 41, 42, 43, 44, 45, 46, 47,
+			32, 33, 34, 35, 36, 37, 38, 39,
+			24, 25, 26, 27, 28, 29, 30, 31,
+			16, 17, 18, 19, 20, 21, 22, 23,
+			8,   9, 10, 11, 12, 13, 14, 15,
+			0,   1,  2,  3,  4,  5,  6,  7
+	};
 	// @formatter:on
 
-	final static int PAWN_VALUE = 100;
-	final static int KNIGHT_VALUE = 300;
-	final static int BISHOP_VALUE = 300;
-	final static int ROOK_VALUE = 500;
-	final static int QUEEN_VALUE = 900;
+	final static int MG_PAWN_VALUE = 82;
+	final static int MG_KNIGHT_VALUE = 337;
+	final static int MG_BISHOP_VALUE = 365;
+	final static int MG_ROOK_VALUE = 477;
+	final static int MG_QUEEN_VALUE = 1025;
+
+	final static int EG_PAWN_VALUE = 94;
+	final static int EG_KNIGHT_VALUE = 281;
+	final static int EG_BISHOP_VALUE = 297;
+	final static int EG_ROOK_VALUE = 512;
+	final static int EG_QUEEN_VALUE = 936;
 
 	final static int PAWN_PHASE = 0;
 	final static int KNIGHT_PHASE = 1;
@@ -162,12 +180,14 @@ public class PeSTO
 	final static int ROOK_PHASE = 2;
 	final static int QUEEN_PHASE = 4;
 
-	final static int MAX_PHASE = PAWN_PHASE * 8 + KNIGHT_PHASE * 2 + BISHOP_PHASE * 2
-			+ ROOK_PHASE * 2 + QUEEN_PHASE * 2;
+	final static int TEMPO = 8;
+
+	final static int MAX_PHASE = PAWN_PHASE * 16 + KNIGHT_PHASE * 4 + BISHOP_PHASE * 4 + ROOK_PHASE * 4
+			+ QUEEN_PHASE * 2;
 
 	private static int getIndex(Side side, Square square)
 	{
-		return side == Side.BLACK ? square.ordinal() : 63 - square.ordinal();
+		return side == Side.BLACK ? square.ordinal() : MIRRORED_SQUARE_VALUE[square.ordinal()];
 	}
 
 	private static int pieceMiddleGameValue(Piece piece, Square square)
@@ -175,15 +195,15 @@ public class PeSTO
 		switch (piece.getPieceType())
 		{
 			case PAWN:
-				return MG_PAWN_TABLE[getIndex(piece.getPieceSide(), square)] + PAWN_VALUE;
+				return MG_PAWN_TABLE[getIndex(piece.getPieceSide(), square)] + MG_PAWN_VALUE;
 			case KNIGHT:
-				return MG_KNIGHT_TABLE[getIndex(piece.getPieceSide(), square)] + KNIGHT_VALUE;
+				return MG_KNIGHT_TABLE[getIndex(piece.getPieceSide(), square)] + MG_KNIGHT_VALUE;
 			case BISHOP:
-				return MG_BISHOP_TABLE[getIndex(piece.getPieceSide(), square)] + BISHOP_VALUE;
+				return MG_BISHOP_TABLE[getIndex(piece.getPieceSide(), square)] + MG_BISHOP_VALUE;
 			case ROOK:
-				return MG_ROOK_TABLE[getIndex(piece.getPieceSide(), square)] + ROOK_VALUE;
+				return MG_ROOK_TABLE[getIndex(piece.getPieceSide(), square)] + MG_ROOK_VALUE;
 			case QUEEN:
-				return MG_QUEEN_TABLE[getIndex(piece.getPieceSide(), square)] + QUEEN_VALUE;
+				return MG_QUEEN_TABLE[getIndex(piece.getPieceSide(), square)] + MG_QUEEN_VALUE;
 			case KING:
 				return MG_KING_TABLE[getIndex(piece.getPieceSide(), square)];
 			default:
@@ -197,15 +217,15 @@ public class PeSTO
 		switch (piece.getPieceType())
 		{
 			case PAWN:
-				return EG_PAWN_TABLE[getIndex(piece.getPieceSide(), square)] + PAWN_VALUE;
+				return EG_PAWN_TABLE[getIndex(piece.getPieceSide(), square)] + EG_PAWN_VALUE;
 			case KNIGHT:
-				return EG_KNIGHT_TABLE[getIndex(piece.getPieceSide(), square)] + KNIGHT_VALUE;
+				return EG_KNIGHT_TABLE[getIndex(piece.getPieceSide(), square)] + EG_KNIGHT_VALUE;
 			case BISHOP:
-				return EG_BISHOP_TABLE[getIndex(piece.getPieceSide(), square)] + BISHOP_VALUE;
+				return EG_BISHOP_TABLE[getIndex(piece.getPieceSide(), square)] + EG_BISHOP_VALUE;
 			case ROOK:
-				return EG_ROOK_TABLE[getIndex(piece.getPieceSide(), square)] + ROOK_VALUE;
+				return EG_ROOK_TABLE[getIndex(piece.getPieceSide(), square)] + EG_ROOK_VALUE;
 			case QUEEN:
-				return EG_QUEEN_TABLE[getIndex(piece.getPieceSide(), square)] + QUEEN_VALUE;
+				return EG_QUEEN_TABLE[getIndex(piece.getPieceSide(), square)] + EG_QUEEN_VALUE;
 			case KING:
 				return EG_KING_TABLE[getIndex(piece.getPieceSide(), square)];
 			default:
@@ -269,7 +289,7 @@ public class PeSTO
 		Side ourSide = board.getSideToMove();
 		Side opposite = board.getSideToMove().flip();
 		// @formatter:off
-		return Long.bitCount(board.getBitboard(Piece.make(board.getSideToMove(), PieceType.PAWN))) * PAWN_PHASE
+		return Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.PAWN))) * PAWN_PHASE
 				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.KNIGHT))) * KNIGHT_PHASE
 				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.BISHOP))) * BISHOP_PHASE
 				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.ROOK))) * ROOK_PHASE
@@ -282,9 +302,62 @@ public class PeSTO
 		// @formatter:on
 	}
 
+	private static int middleGameMaterialEval(Board board)
+	{
+
+		Side ourSide = board.getSideToMove();
+		Side opposite = board.getSideToMove().flip();
+		// @formatter:off
+		return Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.PAWN))) * MG_PAWN_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.KNIGHT))) * MG_KNIGHT_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.BISHOP))) * MG_BISHOP_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.ROOK))) * MG_ROOK_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.QUEEN))) * MG_QUEEN_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.PAWN))) * MG_PAWN_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.KNIGHT))) * MG_KNIGHT_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.BISHOP))) * MG_BISHOP_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.ROOK))) * MG_ROOK_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.QUEEN))) * MG_QUEEN_VALUE;
+		// @formatter:on
+	}
+
+	private static int endGameMaterialEval(Board board)
+	{
+
+		Side ourSide = board.getSideToMove();
+		Side opposite = board.getSideToMove().flip();
+		// @formatter:off
+		return Long.bitCount(board.getBitboard(Piece.make(board.getSideToMove(), PieceType.PAWN))) * EG_PAWN_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.KNIGHT))) * EG_KNIGHT_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.BISHOP))) * EG_BISHOP_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.ROOK))) * EG_ROOK_VALUE
+				+ Long.bitCount(board.getBitboard(Piece.make(ourSide, PieceType.QUEEN))) * EG_QUEEN_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.PAWN))) * EG_PAWN_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.KNIGHT))) * EG_KNIGHT_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.BISHOP))) * EG_BISHOP_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.ROOK))) * EG_ROOK_VALUE
+				- Long.bitCount(board.getBitboard(Piece.make(opposite, PieceType.QUEEN))) * EG_QUEEN_VALUE;
+		// @formatter:on
+	}
+
+	private static int bishopPairAdjustment(Board board)
+	{
+		return (Long.bitCount(board.getBitboard(Piece.make(board.getSideToMove(), PieceType.BISHOP))) == 2 ? 720 : 0)
+				- (Long.bitCount(board.getBitboard(Piece.make(board.getSideToMove().flip(), PieceType.BISHOP))) == 2
+						? 720
+						: 0);
+	}
+
+	public static int materialEval(Board board)
+	{
+		int gamePhase = Math.min(MAX_PHASE, gamePhase(board));
+		return middleGameMaterialEval(board) * gamePhase + endGameMaterialEval(board) * (MAX_PHASE - gamePhase);
+	}
+
 	public static int evaluate(Board board)
 	{
 		int gamePhase = Math.min(MAX_PHASE, gamePhase(board));
-		return middleGameEval(board) * gamePhase + endGameEval(board) * (MAX_PHASE - gamePhase);
+		return middleGameEval(board) * gamePhase + endGameEval(board) * (MAX_PHASE - gamePhase)
+				+ bishopPairAdjustment(board) + TEMPO * MAX_PHASE;
 	}
 }
